@@ -40,14 +40,6 @@
 | الدينار الكويتي | KWD | 🇰🇼 |
 | الريال العماني | OMR | 🇴🇲 |
 
-### 🔄 منطق التحويل
-
-| الحالة | الصيغة | مصدر السعر |
-|--------|--------|-----------|
-| YER → عملة أجنبية | المبلغ ÷ سعر البيع | Supabase (يدوي) |
-| عملة أجنبية → YER | المبلغ × سعر الشراء | Supabase (يدوي) |
-| عملة أجنبية → عملة أجنبية | المبلغ × (سعر الهدف ÷ سعر الأساس) | API |
-
 ### 🛠️ التقنيات المستخدمة
 
 - **Flutter** - إطار العمل
@@ -55,54 +47,6 @@
 - **Supabase** - قاعدة البيانات والمصادقة
 - **Provider** - إدارة الحالة
 - **Open Exchange Rates API** - أسعار العملات العالمية
-
-### 📁 هيكل المشروع
-
-```
-lib/
-├── main.dart                 # نقطة الدخول
-├── models/
-│   └── currency.dart         # نموذج العملة
-├── providers/
-│   └── currency_provider.dart # إدارة الحالة
-├── screens/
-│   ├── home_screen.dart      # الشاشة الرئيسية
-│   ├── admin_login_screen.dart # تسجيل دخول المسؤول
-│   └── rate_editor_screen.dart # تعديل الأسعار
-├── services/
-│   ├── supabase_service.dart # خدمة Supabase
-│   └── rates_service.dart    # خدمة الأسعار
-└── utils/
-    └── constants.dart        # الثوابت والألوان
-```
-
-### 🗄️ جداول قاعدة البيانات (Supabase)
-
-```sql
--- جدول الأسعار الاحتياطية
-CREATE TABLE backup_rates (
-    id SERIAL PRIMARY KEY,
-    currency_code TEXT UNIQUE NOT NULL,
-    buy_rate NUMERIC NOT NULL,
-    sell_rate NUMERIC NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- جدول الأسعار التاريخية
-CREATE TABLE historical_rates (
-    id SERIAL PRIMARY KEY,
-    base_currency TEXT NOT NULL,
-    rates JSONB NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- جدول المسؤولين
-CREATE TABLE admins (
-    id SERIAL PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
-);
-```
 
 ### 🚀 التثبيت والتشغيل
 
@@ -152,14 +96,6 @@ class AppConstants {
 - 👨‍💼 **Admin Panel** - For editing backup rates
 - 📦 **Fallback System** - Works even without internet
 - 🏳️ **Country Flags** - Using Unicode Emojis
-
-### 🔄 Conversion Logic
-
-| Scenario | Formula | Rate Source |
-|----------|---------|-------------|
-| YER → Foreign | Amount ÷ Sell Rate | Supabase (Manual) |
-| Foreign → YER | Amount × Buy Rate | Supabase (Manual) |
-| Foreign → Foreign | Amount × (Target Rate ÷ Base Rate) | API |
 
 ### 🛠️ Tech Stack
 
