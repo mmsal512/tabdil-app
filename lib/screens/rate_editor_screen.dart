@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/currency_provider.dart';
 import '../utils/constants.dart';
+import '../widgets/hyper_ui.dart';
 
 class RateEditorScreen extends StatefulWidget {
   const RateEditorScreen({super.key});
@@ -94,165 +95,137 @@ class _RateEditorScreenState extends State<RateEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Edit Rates'),
-        backgroundColor: AppColors.cardSurface,
-      ),
-      body: Consumer<CurrencyProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading && _buyControllers.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.accent),
-            );
-          }
+      body: Stack(
+        children: [
+          // Animated Background
+          const MorphicBackground(),
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: provider.currencies.length,
-                  itemBuilder: (context, index) {
-                    final currency = provider.currencies[index];
-                    if (currency.code == 'YER') {
-                      return const SizedBox.shrink();
-                    }
-
-                    final buyController = _buyControllers[currency.code];
-                    final sellController = _sellControllers[currency.code];
-
-                    if (buyController == null || sellController == null) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return Card(
-                      color: AppColors.cardSurface,
-                      margin: const EdgeInsets.all(8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  currency.flag,
-                                  style: const TextStyle(fontSize: 24),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '${currency.name} (${currency.code})',
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: buyController,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                          decimal: true,
-                                        ),
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                    ),
-                                    decoration: const InputDecoration(
-                                      labelText: 'Buy Rate',
-                                      labelStyle: TextStyle(
-                                        color: AppColors.textSecondary,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.textSecondary,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.accent,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: TextField(
-                                    controller: sellController,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                          decimal: true,
-                                        ),
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                    ),
-                                    decoration: const InputDecoration(
-                                      labelText: 'Sell Rate',
-                                      labelStyle: TextStyle(
-                                        color: AppColors.textSecondary,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.textSecondary,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: AppColors.accent,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+          // Content
+          SafeArea(
+            child: Column(
+              children: [
+                // AppBar
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Edit Rates',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              // زر الحفظ الموحد
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accent,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    ],
                   ),
-                  onPressed: _isSaving ? null : _saveAllRates,
-                  child: _isSaving
-                      ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          'حفظ جميع الأسعار',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                 ),
-              ),
-            ],
-          );
-        },
+
+                // List
+                Expanded(
+                  child: Consumer<CurrencyProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isLoading && _buyControllers.isEmpty) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.accent,
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: provider.currencies.length,
+                        itemBuilder: (context, index) {
+                          final currency = provider.currencies[index];
+                          if (currency.code == 'YER') {
+                            return const SizedBox.shrink();
+                          }
+
+                          final buyController = _buyControllers[currency.code];
+                          final sellController =
+                              _sellControllers[currency.code];
+
+                          if (buyController == null || sellController == null) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return GlassContainer(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      currency.flag,
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      '${currency.name} (${currency.code})',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: GlassTextField(
+                                        controller: buyController,
+                                        label: 'Buy Rate',
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: GlassTextField(
+                                        controller: sellController,
+                                        label: 'Sell Rate',
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+
+                // Save Button
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: NeonButton(
+                    text: 'حفظ جميع الأسعار',
+                    onPressed: _saveAllRates,
+                    isLoading: _isSaving,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

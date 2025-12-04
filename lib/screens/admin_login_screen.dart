@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
 import '../utils/constants.dart';
 import 'rate_editor_screen.dart';
+import '../widgets/hyper_ui.dart';
 
 class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({super.key});
@@ -13,23 +14,18 @@ class AdminLoginScreen extends StatefulWidget {
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _supabaseService = SupabaseService();
   bool _isLoading = false;
-  String? _errorMessage;
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    setState(() => _isLoading = true);
 
-    final success = await SupabaseService().authenticateAdmin(
-      _usernameController.text,
-      _passwordController.text,
+    final success = await _supabaseService.authenticateAdmin(
+      _usernameController.text.trim(),
+      _passwordController.text.trim(),
     );
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
     if (success) {
       if (mounted) {
@@ -39,82 +35,108 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         );
       }
     } else {
-      setState(() {
-        _errorMessage = 'Invalid username or password';
-      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid credentials'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Admin Login'),
-        backgroundColor: AppColors.cardSurface,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _usernameController,
-              style: const TextStyle(color: AppColors.textPrimary),
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.textSecondary),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.accent),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              style: const TextStyle(color: AppColors.textPrimary),
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.textSecondary),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.accent),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Text(
-                  _errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                onPressed: _isLoading ? null : _login,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+      body: Stack(
+        children: [
+          // Animated Background
+          const MorphicBackground(),
+
+          // Content
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: GlassContainer(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Icon
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFFF9800).withOpacity(0.1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFFF9800).withOpacity(0.2),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
                       ),
+                      child: const Icon(
+                        Icons.admin_panel_settings,
+                        size: 48,
+                        color: Color(0xFFFF9800),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Title
+                    const Text(
+                      'Admin Access',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Fields
+                    GlassTextField(
+                      controller: _usernameController,
+                      label: 'Username',
+                      prefixIcon: Icons.person,
+                    ),
+                    const SizedBox(height: 16),
+                    GlassTextField(
+                      controller: _passwordController,
+                      label: 'Password',
+                      obscureText: true,
+                      prefixIcon: Icons.lock,
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: NeonButton(
+                        text: 'LOGIN',
+                        onPressed: _login,
+                        isLoading: _isLoading,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+
+          // Back Button
+          Positioned(
+            top: 40,
+            left: 16,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
       ),
     );
   }

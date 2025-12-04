@@ -31,32 +31,37 @@ class CurrencyData {
     {
       'code': 'YER',
       'flag': '🇾🇪',
-      'name': 'Yemeni Rial',
+      'name': 'ريال يمني',
       'defaultApiRate': 250.0,
     },
-    {'code': 'USD', 'flag': '🇺🇸', 'name': 'US Dollar', 'defaultApiRate': 1.0},
+    {
+      'code': 'USD',
+      'flag': '🇺🇸',
+      'name': 'دولار أمريكي',
+      'defaultApiRate': 1.0,
+    },
     {
       'code': 'SAR',
       'flag': '🇸🇦',
-      'name': 'Saudi Riyal',
+      'name': 'ريال سعودي',
       'defaultApiRate': 3.75,
     },
     {
       'code': 'AED',
       'flag': '🇦🇪',
-      'name': 'UAE Dirham',
+      'name': 'درهم إماراتي',
       'defaultApiRate': 3.6725,
     },
     {
       'code': 'KWD',
       'flag': '🇰🇼',
-      'name': 'Kuwaiti Dinar',
+      'name': 'دينار كويتي',
       'defaultApiRate': 0.308,
     },
     {
       'code': 'OMR',
       'flag': '🇴🇲',
-      'name': 'Omani Rial',
+      'name': 'ريال عماني',
       'defaultApiRate': 0.385,
     },
   ];
