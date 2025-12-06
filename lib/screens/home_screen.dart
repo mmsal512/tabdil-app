@@ -118,8 +118,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(status),
-                        backgroundColor: Colors.black87,
+                        content: Text(
+                          status,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        backgroundColor: status.contains('✅')
+                            ? const Color(0xFF22C55E) // Green
+                            : status.contains('⚠️')
+                            ? const Color(0xFFF59E0B) // Orange
+                            : const Color(0xFF6366F1), // Purple
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: const EdgeInsets.all(16),
                       ),
                     );
                   }
@@ -164,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       builder: (context, provider, _) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
@@ -188,6 +204,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 provider.ratesSourceText,
                 style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
+              if (provider.lastUpdateText.isNotEmpty) ...[
+                const SizedBox(width: 12),
+                Text(
+                  '|',
+                  style: TextStyle(color: Colors.white.withOpacity(0.3)),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  provider.lastUpdateText,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.5),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ],
           ),
         );

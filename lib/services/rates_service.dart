@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../utils/constants.dart';
+import 'app_config.dart';
 import 'supabase_service.dart';
 
 enum RatesSource { api, supabase, defaults, none }
@@ -20,9 +20,11 @@ class RatesService {
   /// If fails, falls back to Supabase Historical Rates.
   Future<RatesResult> fetchApiRatesWithStatus() async {
     try {
-      print('Fetching API Rates from: ${AppConstants.exchangeRateApiUrl}');
+      final apiUrl = AppConfig.exchangeRateApiUrl;
+      print('Fetching API Rates from: $apiUrl');
+
       final response = await http
-          .get(Uri.parse(AppConstants.exchangeRateApiUrl))
+          .get(Uri.parse(apiUrl))
           .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {

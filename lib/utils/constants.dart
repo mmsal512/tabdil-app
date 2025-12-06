@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Application UI Colors
 class AppColors {
   static const Color background = Colors.black;
   static const Color cardSurface = Color(0xFF1E1E1E); // Dark Grey
@@ -8,24 +9,8 @@ class AppColors {
   static const Color textSecondary = Colors.grey;
 }
 
-class AppConstants {
-  // Supabase
-  static const String supabaseUrl = 'https://hwhmrgplcbhyzfjnxymi.supabase.co';
-  static const String supabaseAnonKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3aG1yZ3BsY2JoeXpmam54eW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ4NDA2MDksImV4cCI6MjA4MDQxNjYwOX0.K9GFrpKEP9FVM_7h5VenXRABGQVNi90s4wB_LKSpfF0';
-
-  // Open Exchange Rates API
-  static const String openExchangeRatesAppId =
-      'd81f75e2194e486da9e3cc870c183f9b';
-  static const String exchangeRateApiUrl =
-      'https://openexchangerates.org/api/latest.json?app_id=$openExchangeRatesAppId';
-
-  // Table Names
-  static const String tableBackupRates = 'backup_rates';
-  static const String tableHistoricalRates = 'historical_rates';
-  static const String tableAdmins = 'admins';
-}
-
+/// Supported Currencies Data
+/// Note: API keys and URLs are now loaded from runtime config (AppConfig)
 class CurrencyData {
   static const List<Map<String, dynamic>> supportedCurrencies = [
     {

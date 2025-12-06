@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
-import '../utils/constants.dart';
 import 'rate_editor_screen.dart';
 import '../widgets/hyper_ui.dart';
 

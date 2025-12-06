@@ -1,0 +1,37 @@
+# =============================================================================
+# Tabdil Flutter Web - Docker Compose Configuration
+# Production-ready setup with Docker secrets
+# =============================================================================
+
+services:
+  tabdil-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tabdil-web
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+    secrets:
+      - app_secrets
+    networks:
+      - tabdil-network
+    labels:
+      - "com.tabdil.description=Tabdil Currency Converter Web App"
+      - "com.tabdil.version=1.0.0"
+
+# =============================================================================
+# Secrets Configuration
+# =============================================================================
+secrets:
+  app_secrets:
+    file: ./secrets/secret.yml
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  tabdil-network:
+    driver: bridge

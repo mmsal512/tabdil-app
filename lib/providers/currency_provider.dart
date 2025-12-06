@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/currency.dart';
 import '../services/rates_service.dart';
 import '../services/supabase_service.dart';
@@ -23,6 +24,16 @@ class CurrencyProvider with ChangeNotifier {
   // API Status tracking
   RatesSource _ratesSource = RatesSource.none;
   RatesSource get ratesSource => _ratesSource;
+
+  // Last update time
+  DateTime? _lastUpdateTime;
+  DateTime? get lastUpdateTime => _lastUpdateTime;
+
+  String get lastUpdateText {
+    if (_lastUpdateTime == null) return '';
+    final formatter = DateFormat('yyyy-MM-dd - hh:mm a');
+    return 'آخر تحديث: ${formatter.format(_lastUpdateTime!)}';
+  }
 
   String get ratesSourceText {
     switch (_ratesSource) {
@@ -96,6 +107,9 @@ class CurrencyProvider with ChangeNotifier {
           currency.apiRate = apiResult.rates[currency.code]!;
         }
       }
+
+      // Update last refresh time
+      _lastUpdateTime = DateTime.now();
     } catch (e) {
       print('Error refreshing rates: $e');
       statusMessage = '❌ خطأ في تحديث الأسعار';
