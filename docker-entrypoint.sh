@@ -35,12 +35,13 @@ fi
 APP_ENV="${APP_ENV:-production}"
 
 # -----------------------------------------------------------------------------
-# Validate required secrets
+# Use defaults if secrets not provided (for demo/testing)
 # -----------------------------------------------------------------------------
 if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-    echo "❌ ERROR: Missing required secrets (SUPABASE_URL or SUPABASE_ANON_KEY)"
-    echo "   Please ensure secrets/secret.yml contains the required values."
-    exit 1
+    echo "⚠️  No secrets provided, using built-in defaults..."
+    SUPABASE_URL="${SUPABASE_URL:-https://hwhmrgplcbhyzfjnxymi.supabase.co}"
+    SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3aG1yZ3BsY2JoeXpmam54eW1pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ4NDA2MDksImV4cCI6MjA4MDQxNjYwOX0.K9GFrpKEP9FVM_7h5VenXRABGQVNi90s4wB_LKSpfF0}"
+    OPEN_EXCHANGE_API_KEY="${OPEN_EXCHANGE_API_KEY:-d81f75e2194e486da9e3cc870c183f9b}"
 fi
 
 if [ -z "$OPEN_EXCHANGE_API_KEY" ]; then
